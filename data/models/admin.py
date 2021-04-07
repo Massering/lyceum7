@@ -3,9 +3,10 @@ from data.db_session import SqlAlchemyBase
 import sqlalchemy
 from sqlalchemy_serializer import SerializerMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 
-class Admin(SqlAlchemyBase, SerializerMixin):
+class Admin(SqlAlchemyBase, SerializerMixin, UserMixin):
     """Модель админа, который будет добавлять новости, достижения и
     прочий не статичный контент"""
 
@@ -15,7 +16,7 @@ class Admin(SqlAlchemyBase, SerializerMixin):
                            autoincrement=True, nullable=False)
     surname = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    email = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=False)
+    email = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     login = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=False)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
 
