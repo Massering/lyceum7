@@ -1,19 +1,9 @@
-from config import APP_SETTINGS
-from data import db_session
-from data.__all_models import Admin
-from forms.admin import AdminLoginForm, AdminRegisterForm
+from app import app, login_manager, db_session
+from .data.__all_models import Admin
+from .forms.admin import AdminLoginForm, AdminRegisterForm
 
-from flask import Flask, render_template, redirect, abort
-from flask_login import login_user, logout_user, login_required, LoginManager
-
-
-app = Flask(__name__)
-app.config.update(APP_SETTINGS)
-# Менеджер логинов (нужно для работы flask_login)
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-db_session.global_init("db/app_data.sqlite")
+from flask import render_template, redirect, abort
+from flask_login import login_required, login_user, logout_user
 
 
 @login_manager.user_loader
@@ -22,13 +12,6 @@ def load_admin(admin_id: int):
     return session.query(Admin).get(admin_id)
 
 
-@app.route('/')
-@app.route('/index')
-def home_page():
-    return render_template('home_page.html', title='Главная')
-
-
-# region admin routes
 @app.route('/admin/')
 @app.route('/admin/index')
 @login_required
@@ -86,16 +69,3 @@ def register_admin():
             redirect('/admin/login')
         return render_template('admin_register.html', title='Регистрация', form=form)
     abort(404)
-# endregion
-
-
-# помимо 404 будет обрабатываться ещё и попытка перейти на
-# панель админа без входа в аккаунт
-@login_manager.unauthorized_handler
-@app.errorhandler(404)
-def handle_404(error=""):
-    return render_template("404.html")
-
-
-if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
