@@ -1,9 +1,10 @@
 import sys
-from logging.config import fileConfig
+sys.path.insert(0, "../app/")
 
 from data.db_session import SqlAlchemyBase
 import data.__all_models
 
+from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
@@ -20,7 +21,6 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-sys.path.insert(0, "..")
 target_metadata = SqlAlchemyBase.metadata
 
 # other values from the config, defined by the needs of env.py,

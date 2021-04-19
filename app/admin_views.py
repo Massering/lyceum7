@@ -51,10 +51,16 @@ def register_admin():
                                        form=form,
                                        message="Пароли не совпадают")
             session = db_session.create_session()
+            # Проверка на совпадение логина
             if session.query(Admin).filter(Admin.login == form.login.data).first():
                 return render_template('admin_register.html', title='Регистрация',
                                        form=form,
                                        message="Такой пользователь уже есть")
+            # Проверка на совпадение почты
+            if session.query(Admin).filter(Admin.email == form.email.data).first():
+                return render_template('admin_register.html', title='Регистрация',
+                                       form=form,
+                                       message="Такая почта уже указана")
             # Добавление аккаунта админа в БД
             admin_user = Admin(
                 login=form.login.data,
