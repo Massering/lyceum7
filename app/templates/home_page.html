@@ -1,34 +1,20 @@
-{% extends "base.html" %}
+{% extends "news_page.html" %}
 
-{% block content %}
-<form class="main">
-    <div class="headerblock">
-        <div class="row">
-            <div class="schooltitle" style="margin-top: -21px;">
-                <table class="horizontal" style="margin-top: 10px; border: 0px solid gray;">
-                    <td style="border: 0px solid gray;">
-                        <img src="static/img/title.png" style="height: 300px;">
-                    </td>
-                    <td style="border: 0px solid gray; width: 100%;">
-                        <img src="http://cs627328.vk.me/v627328009/3b01/q1CIqQa8_fQ.jpg" style="height: 300px; width: 100%; object-fit: cover;">
-                    </td>
-                </table>
-            </div>
+{% block header %}
+<div class="headerblock">
+    <div class="row">
+        <div class="schooltitle" style="margin-top: -21px;">
+            <table class="horizontal" style="margin-top: 10px; border: 0px solid gray;">
+                <td style="border: 0px solid gray;">
+                    <img src="static/img/title.png" style="height: 300px;">
+                </td>
+                <td style="border: 0px solid gray; width: 100%;">
+                    <img src="http://cs627328.vk.me/v627328009/3b01/q1CIqQa8_fQ.jpg"
+                         style="height: 300px; width: 100%; object-fit: cover;">
+                </td>
+            </table>
         </div>
     </div>
-    <div class="newsblock">
-        <h2 style="margin-top: 30px; margin-bottom: 20px; text-align: center;">Новости</h2>
-        {% for news in news_list %}
-        <div class="news_card">
-            <h4>{{ news.title }}</h4>
-            <h6 style="margin-top: -7px; margin-left: 0px;">{{ news.creation_time }}</h6>
-            <br>
-            {% for picture in news.picture %}
-            <img src="static/img/news_pictures/{{picture}}" alt="{{picture}} картинка не найдена"  style="width: 100%;">
-            {% endfor %}
-            <label>{{ news.content }}</label>
-        </div>
-        {% endfor %}
-    </div>
-</form>
+</div>
+<br>
 {% endblock %}

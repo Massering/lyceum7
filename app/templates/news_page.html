@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form class="main">
+    {% block header %}
+    {% endblock %}
+    <div class="newsblock">
+        <h2 style="margin-top: 10px; margin-bottom: 20px; text-align: center;">Новости</h2>
+        {% for news in news_list %}
+        <div class="news_card">
+            <h4>{{ news.title }}</h4>
+            <h6 style="margin-top: -7px; margin-left: 0px;">{{ news.creation_time }} (тут дата)</h6>
+            <br>
+            <h4>/Здесь будут картинки/</h4>
+            <label>{{ news.content }}</label>
+        </div>
+        {% endfor %}
+    </div>
+</form>
+{% endblock %}

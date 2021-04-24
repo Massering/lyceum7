@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form class="main">
+    <div class="awardsblock">
+        <h2 style="margin-top: 10px; margin-bottom: 20px; text-align: center;">Достижения</h2>
+        {% for award in awards_list %}
+        <div class="award_card">
+            <h4>{{ award.title }}</h4>
+            <h6 style="margin-top: -7px; margin-left: 0px;">{{ award.creation_time }} (тут дата)</h6>
+            <br>
+            <h4>/Здесь будут картинки/</h4>
+            <label>{{ award.content }}</label>
+        </div>
+        {% endfor %}
+    </div>
+</form>
+{% endblock %}

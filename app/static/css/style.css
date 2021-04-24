@@ -12,7 +12,7 @@ form {
 }
 form.main {
     margin-top: -30px;
-    max-width: 1100px;
+    max-width: 1400px;
     background-color: #e7e7e7;
     border: 0px solid gray;
     border-color: #333333;
@@ -26,7 +26,6 @@ form.main {
     padding: 30px;
     padding-top: 20px;
     margin-top: 10px;
-    max-width: 1100px;
     background-color: #fcfcfc;
     border: 1px solid gray;
     border-color: #888;
@@ -79,15 +78,13 @@ nav {
     -webkit-box-shadow:0px 2px 16px 0px rgba(0,0,0,0.25);
     -moz-box-shadow:0px 2px 16px 0px rgba(0,0,0,0.25);
 }
-@media (min-width: 800px)
-.navbar-expand-lg {
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-flow: row nowrap;
-    flex-flow: row nowrap;
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
+@media (min-width: 600px)
+.navbar-collapse .navbar-expand-lg {
+    display: -webkit-box!important;
+    display: -ms-flexbox!important;
+    display: flex!important;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
 }
 .navbar {
     padding: 5px;
@@ -127,6 +124,9 @@ button {
     border: 1px solid gray;
     border-radius: 0px;
     padding-top: 4px;
+}
+.navbar_btn {
+   border-color: ea7c1a;
 }
 table {
     margin-left: auto;
