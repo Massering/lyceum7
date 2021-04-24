@@ -29,47 +29,29 @@ class Admin(SqlAlchemyBase, SerializerMixin, UserMixin):
         return check_password_hash(self.hashed_password, password)
 
 
-class Award(SqlAlchemyBase, SerializerMixin):
-    __tablename__ = 'awards'
-
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True,
-                           autoincrement=True, nullable=False)
-    title = sqlalchemy.Column(sqlalchemy.String, default="Достижение")
-    # Имя файла изображения награды
-    image_filename = sqlalchemy.Column(sqlalchemy.String, default="", nullable=True)
-    direction = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-
-
-class Category(SqlAlchemyBase, SerializerMixin):
-    """Модель категории для новостей на сайте"""
-
-    __tablename__ = 'categories'
-
-    association_table = sqlalchemy.Table(
-        'association',
-        SqlAlchemyBase.metadata,
-        sqlalchemy.Column('news', sqlalchemy.Integer,
-                          sqlalchemy.ForeignKey('news.id')),
-        sqlalchemy.Column('category', sqlalchemy.Integer,
-                          sqlalchemy.ForeignKey('categories.id'))
-    )
-
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True,
-                           autoincrement=True, nullable=False)
-    name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-
-
 class News(SqlAlchemyBase, SerializerMixin):
     """Модель новости"""
 
     __tablename__ = 'news'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True,
-                           autoincrement=True, nullable=False)
-    title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    content = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    categories = sqlalchemy.orm.relation("Category",
-                                         secondary="association",
-                                         backref="news")
+                           autoincrement=True, nullable=False, index=True)
+    title = sqlalchemy.Column(sqlalchemy.String)
+    content = sqlalchemy.Column(sqlalchemy.String)
+    # Пути к изображениям новости, через точку с запятой
+    paths_to_images = sqlalchemy.Column(sqlalchemy.String, default="")
     creation_time = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
+
+
+class Award(SqlAlchemyBase, SerializerMixin):
+    __tablename__ = 'awards'
+
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True,
+                           autoincrement=True, nullable=False, index=True)
+    title = sqlalchemy.Column(sqlalchemy.String, default="Достижение")
+    # Имя файла изображения награды
+    image_filename = sqlalchemy.Column(sqlalchemy.String, default="")
+    direction = sqlalchemy.Column(sqlalchemy.String, default="")
+    description = sqlalchemy.Column(sqlalchemy.String, default="")
+    creation_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())

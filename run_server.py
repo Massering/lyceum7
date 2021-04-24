@@ -1,3 +1,10 @@
+# Добавление пути до папки app в sys.path, чтобы импорты в коде
+# выглядили понятнее и красивее
+import os
+import sys
+
+sys.path.append(os.path.abspath(f"{os.curdir}/app"))
+
 from app import app
 
 
