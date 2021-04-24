@@ -2,6 +2,9 @@ from app import login_manager, app
 
 from flask import render_template, redirect, abort
 
+from app.data.db_session import create_session
+from app.data.__all_models import News
+
 
 # помимо 404 будет обрабатываться ещё и попытка перейти на
 # панель админа без входа в аккаунт
@@ -14,6 +17,6 @@ def handle_404(error=""):
 @app.route('/')
 @app.route('/index')
 def home_page():
-    return render_template('home_page.html', title='Главная')
-
-
+    db_sess = create_session()
+    news = db_sess.query(News).all()
+    return render_template('home_page.html', title='Главная', news_list=news)
