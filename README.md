@@ -20,5 +20,7 @@
 - requirements.txt – файл с необходимыми python пакетами
 - run_server.py – файл, запускающий сервер
 
-### Установка дополнительных python пакетов
-```pip install -r requirements.txt```
+## Установка дополнительных python пакетов
+```shell script
+pip install -r requirements.txt
+```

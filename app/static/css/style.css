@@ -1,41 +1,145 @@
-/*
-form.list {
-    margin-top: 50px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 700px;
-    background-color: #ffffff;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid gray;
-    border-radius: 5px;
-}
-form.standard {
-    margin-top: 50px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 700px;
-    background-color: #ffffff;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid gray;
-    border-color: #ffffff;
-    border-radius: 10px;
-}*/
 body {
-    font-family: Segoe UI;
+    background-color: #888888;
+    font-family: "Segoe UI";
 }
-img {
+
+form {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 10px;
 }
+
 nav {
-    background-color: #f5f5f5;
+    padding: 0px;
+    min-height: 50px;
+    background-color: #eeeefe;
+    box-shadow:0px 2px 16px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow:0px 2px 16px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow:0px 2px 16px 0px rgba(0,0,0,0.25);
 }
+
+@media (min-width: 800px)
+.navbar-expand-lg {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+
+.navbar {
+    padding: 5px;
+    align-items: center;
+}
+
+.dropdown-menu {
+    padding: 2px;
+}
+
+.main {
+    margin-top: -30px;
+    padding: 50px;
+    max-width: 1100px;
+
+    background-color: #e7e7e7;
+
+    border: 0px solid gray;
+    border-color: #333333;
+    border-radius: 0px;
+
+    box-shadow: 2px 1px 15px 0px rgba(0,0,0,0.57);
+    -webkit-box-shadow: 2px 1px 15px 0px rgba(0,0,0,0.57);
+    -moz-box-shadow: 2px 1px 15px 0px rgba(0,0,0,0.57);
+}
+
+.header-block {
+    background-image: url("http://cs627328.vk.me/v627328009/3b01/q1CIqQa8_fQ.jpg");
+    padding: 20px;
+}
+
+.header-text {
+    color: #fff;
+    margin-left: 15px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.news-card {
+    padding: 30px;
+    padding-top: 20px;
+    margin-top: 10px;
+    max-width: 1100px;
+
+    background-color: #fcfcfc;
+
+    border: 1px solid #fcfcfc;
+    border-radius: 0.26em;
+
+    box-shadow: 0px 2px 16px 0px rgba(0,0,0,0.25);
+    -webkit-box-shadow: 0px 2px 16px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: 0px 2px 16px 0px rgba(0,0,0,0.25);
+}
+
 a {
-    line-height: 50px;
-    color: #000000;
-    font-size: 24px;
     text-decoration: none;
     white-space: nowrap;
+    cursor: pointer;
+    color: #050505;
+}
+
+.dropdown-item {
     padding: 15px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.text-date {
+    font-size: 1.25em;
+    color: #555555;
+}
+
+.news-content {
+    font-size: 1.6em;
+    color: #555555;
+}
+
+p {
+    margin-bottom: 0px;
+}
+h1 {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+}
+h2 {
+    color: #555555;
+}
+label {
+    font-size: 1.6em;
+}
+
+input {
+    margin-left: 50px;
+    max-width: 480px;
+}
+
+button {
+    padding: 5px;
+}
+
+.btn {
+    border: 1px solid gray;
+    border-radius: 0px;
+    padding-top: 4px;
+}
+
+.news-cards-container {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }

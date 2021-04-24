@@ -1,4 +1,5 @@
-from app import login_manager, app
+from app import login_manager, app, db_session
+from data.__all_models import News
 
 from flask import render_template, redirect, abort
 
@@ -14,6 +15,11 @@ def handle_404(error=""):
 @app.route('/')
 @app.route('/index')
 def home_page():
-    return render_template('home_page.html', title='Главная')
+    session = db_session.create_session()
+    params = {
+        "title": "Главная",
+        "news_list": session.query(News).all()
+    }
+    return render_template('home_page.html', **params)
 
 

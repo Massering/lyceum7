@@ -1,5 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>НИЧЕГО НЕТ АААААААААА (страница админа)</h1>
+<ul class="nav nav-pills mb-3" id="tab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="news-tab" data-toggle="pill" href="#news" role="tab" aria-controls="news" aria-selected="true">Новости</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="awards-tab" data-toggle="pill" href="#awards" role="tab" aria-controls="awards" aria-selected="false">Награды</a>
+    </li>
+</ul>
+<div class="tab-content" id="tabContent">
+    <!--Новости-->
+    <div class="tab-pane active" id="news" role="tabpanel" aria-labelledby="news-tab">
+        <a href="/news/add" role="button" class="btn btn-primary btn-lg btn-block">Добавить новость</a>
+        <div class="news-cards-container">
+            {% for news in news_list %}
+                <div class="card text-white bg-dark mb-3">
+                    {% if news["card_image_path"] != "" %}
+                        <img class="card-img-top" src="{{ news['card_image_path'] }}" alt="">
+                    {% endif %}
+                    <div class="card-header">Новость #{{ loop.index }}</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ news["title"] }}</h5>
+                        <p class="card-text">{{ news["short_description"] }}</p>
+                    </div>
+                    <div class="card-body">
+                        <a href="https://youtu.be/dQw4w9WgXcQ" role="button" class="btn btn-outline-warning">Редактировать</a>
+                        <a href="https://youtu.be/dQw4w9WgXcQ" role="button" class="btn btn-outline-danger">Удалить</a>
+                    </div>
+                    <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small class="text-muted">Изменено: {{ news["modified_date"] }}</small></p>
+                    <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small class="text-muted">Создано: {{ news["creation_time"] }}</small></p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!--Награды-->
+    <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">...</div>
+</div>
 {% endblock %}

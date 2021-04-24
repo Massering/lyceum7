@@ -1,7 +1,7 @@
-from award_parser import parse_args
+from .award_parser import parse_args
 
 from data import db_session
-from data.__all_models.award import Award
+from data.__all_models import Award
 
 from flask import jsonify
 from flask_restful import Resource
@@ -11,38 +11,30 @@ from sqlalchemy.exc import InvalidRequestError, IntegrityError
 def get_award_by_id(award_id: int):
     """
     Функция возвращает достижение по id, или
-    None если достижение не найдено.
+     вызывает HTTPException по коду 404
     """
     session = db_session.create_session()
-    return session.query(Award).get(award_id)
+    result = session.query(Award).get(award_id)
+    if result is None:
+        abort(404)
+        return
+    return result
 
 
 class AwardResource(Resource):
     """Класс представляющий ресурс одного достижения Award"""
 
     # Сообщения об ошибках:
-    AWARD_NOT_FOUND = "Award with id: '{0}' is not exists"
     AWARD_ALREADY_DELETED = "Award with id: '{0}' has already deleted"
 
     def get(self, award_id: int):
         award = get_award_by_id(award_id)
-        if award is None:
-            return jsonify({
-                "success": False,
-                "error": self.AWARD_NOT_FOUND.format(award_id)
-            })
         return jsonify({"success": True, "news": award.to_dict(
-            only=("id", "title", "content", "categories",
-                  "creation_time", "modified_date"))})
+            only=("id", "title", "image_filename",
+                  "direction", "description", "creation_date"))})
 
     def delete(self, award_id: int):
         award = get_award_by_id(award_id)
-        if award is None:
-            return jsonify({
-                "success": False,
-                "error": self.AWARD_NOT_FOUND.format(award_id)
-            })
-
         session = db_session.create_session()
         try:
             session.delete(award)
@@ -62,10 +54,10 @@ class AwardsListResource(Resource):
 
     def get(self):
         session = db_session.create_session()
-        list_of_news = session.query(Award).all()
-        return jsonify({"success": True, "news_list": [news_item.to_dict(
-            only=("id", "title", "content", "categories",
-                  "creation_time", "modified_date")) for news_item in list_of_news]})
+        awards_list = session.query(Award).all()
+        return jsonify({"success": True, "awards_list": [award.to_dict(
+            only=("id", "title", "image_filename",
+                  "direction", "description", "creation_date")) for award in awards_list]})
 
     def post(self):
         args = parse_args()
@@ -73,10 +65,10 @@ class AwardsListResource(Resource):
         news = News(
             id=args["id"],
             title=args["title"],
-            content=args["content"],
-            categories=args["categories"],
-            creation_time=args["creation_time"],
-            modified_date=args["modified_date"],
+            image_filename=args["image_filename"],
+            direction=args["direction"],
+            description=args["description"],
+            creation_date=args["creation_date"],
         )
         try:
             session.add(news)
