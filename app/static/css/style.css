@@ -64,6 +64,13 @@ nav {
     background-color: #cccccc;
 }
 
+.standard {
+    padding: 30px 50px 30px 50px;
+    width: 700px;
+
+    background-color: #e7e7e7;
+}
+
 .header-block {
     background-image: url("/static/img/school.jpg");
     background-size: cover;

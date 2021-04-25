@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form class="login_form" action="" method="post" enctype="multipart/form-data">
+<form class="standard" action="" method="post" enctype="multipart/form-data">
     <h2>Добавление новости</h2>
     <br>
     {{ form.hidden_tag() }}
@@ -16,7 +16,7 @@
     </p>
     <p>
         {{ form.content.label }}<br>
-        {{ form.content(class="form-control") }}<br>
+        {{ form.content(class="form-control", style="height: 300px") }}<br>
         {% for error in form.content.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
