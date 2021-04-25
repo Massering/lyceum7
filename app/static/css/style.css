@@ -42,6 +42,7 @@ nav {
 
 .main {
     margin-top: -30px;
+    margin-bottom: 20px;
     padding: 50px;
     max-width: 1100px;
 
@@ -56,8 +57,17 @@ nav {
     -moz-box-shadow: 2px 1px 15px 0px rgba(0,0,0,0.57);
 }
 
+.login_form {
+    padding: 40px 70px 40px 70px;
+    width: 600px;
+
+    background-color: #cccccc;
+}
+
 .header-block {
-    background-image: url("http://cs627328.vk.me/v627328009/3b01/q1CIqQa8_fQ.jpg");
+    background-image: url("/static/img/school.jpg");
+    background-size: cover;
+    background-: center;
     padding: 20px;
 }
 
@@ -110,21 +120,26 @@ a {
 p {
     margin-bottom: 0px;
 }
+
 h1 {
-    margin-left: auto;
-    margin-right: auto;
-    padding: 20px;
 }
+
 h2 {
     color: #555555;
 }
+
 label {
-    font-size: 1.6em;
+    font-size: 1.3em;
 }
 
-input {
-    margin-left: 50px;
-    max-width: 480px;
+pre {
+    font-size: 1.2em;
+    font-family: 'Segoe UI';
+}
+
+.file-input {
+    background-color: transparent;
+    border: 0px;
 }
 
 button {

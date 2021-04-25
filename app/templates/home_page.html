@@ -1,34 +1,18 @@
-{% extends "base.html" %}
+{% extends "news_page.html" %}
 
-{% block content %}
-<form class="main">
-    <div class="header-block">
-        <!-- Если не нравится эта часть можешь выпилить её нафиг и вернуть старое (и тут и в css), будет работать -->
-        <div class="header-text">
-            <p>Муниципальное автономное общеобразовательное учереждение</p>
-            <p class="h1">Лицей № 7</p>
-            <p>имени героя Советского Союза</p>
-            <p>Б.К. Чернышева</p>
-            <p>г о р о д а  К р а с н о я а р с к а</p>
-            <p>тел. (391) 243-36-28</p>
-            <p>Email: lyceum7@mail.ru</p>
-        </div>
-        <!--<img src="static/img/title.png" style="height: 300px;">-->
-        <!--<img src="http://cs627328.vk.me/v627328009/3b01/q1CIqQa8_fQ.jpg" style="height: 300px; width: 100%; object-fit: cover;">-->
+{% block header %}
+<div class="header-block">
+    <div class="header-text">
+        <p style="letter-spacing: 2.5px;">Муниципальное автономное</p>
+        <p>общеобразовательное учереждение</p>
+        <p class="h1">«Лицей № 7</p>
+        <p style="letter-spacing: 1.5px;">имени героя Советского Союза</p>
+        <p>Б.К. Чернышева»</p>
+        <p style="letter-spacing: 7.2px;">города Красноярска</p>
+        <br>
+        <p style="font-size: 0.85em;">тел. (391) 243-36-28</p>
+        <p style="font-size: 0.85em;">e-mail: lyceum7@mail.ru</p>
     </div>
-    <div class="newsblock">
-        <h2 style="margin-top: 30px; margin-bottom: 20px; text-align: center;">Новости</h2>
-        {% for news in news_list %}
-            <div class="news-card">
-                <h4>{{ news.title }}</h4>
-                <p class="text-date">{{ news.creation_time }}</p>
-                <br>
-                {% for picture in news.picture %}
-                <img src="static/img/news_pictures/{{picture}}" alt="{{ picture }} картинка не найдена"  style="width: 100%;">
-                {% endfor %}
-                <label>{{ news.content }}</label>
-            </div>
-        {% endfor %}
-    </div>
-</form>
+</div>
+<br>
 {% endblock %}

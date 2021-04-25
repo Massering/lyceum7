@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form action="" method="post" enctype="multipart/form-data">
+<form class="login_form" action="" method="post" enctype="multipart/form-data">
+    <h2>Добавление новости</h2>
+    <br>
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>
@@ -23,7 +25,7 @@
     </p>
     <p>
         {{ form.files_field.label }}<br>
-        {{ form.files_field(class="form-control") }}<br>
+        {{ form.files_field(class="form-control file-input") }}<br>
         {% for error in form.files_field.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}

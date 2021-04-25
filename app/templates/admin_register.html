@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Регистрация</h1>
-<form action="" method="post">
+<form class="login_form" action="" method="post">
+    <h1>Регистрация админа</h1>
+    <br>
     {{ form.hidden_tag() }}
     <p>
         {{ form.login.label }}<br>

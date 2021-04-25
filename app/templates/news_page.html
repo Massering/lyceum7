@@ -6,13 +6,28 @@
     {% endblock %}
     <div class="newsblock">
         <h2 style="margin-top: 10px; margin-bottom: 20px; text-align: center;">Новости</h2>
+        {% if current_user.is_authenticated %}
+            <center><a class="btn btn-submit" href="/news/add" style="width: 100%">Добавить</a></center>
+        {% endif %}
         {% for news in news_list %}
-        <div class="news_card">
-            <h4>{{ news.title }}</h4>
-            <h6 style="margin-top: -7px; margin-left: 0px;">{{ news.creation_time }} (тут дата)</h6>
+        <div class="news-card">
+            <h4>
+                {{ news.title }}
+                {% if current_user.is_authenticated %}
+                <a style="text-decoration: none; color: blue;" href="/news/edit/{{ news.id }}">✎</a>
+                <a style="text-decoration: none; color: red;" href="/news/delete/{{ news.id }}">❌</a>
+                {% endif %}
+            </h4>
+            <h6 style="margin-top: -5px; font-size: 0.85em;">{{ news.creation_date|format_data }}</h6>
             <br>
-            <h4>/Здесь будут картинки/</h4>
-            <label>{{ news.content }}</label>
+            {% for img_name in news.paths_to_images.split(';') %}
+            {% if img_name %}
+            <img src="/static/img/news_img/{{img_name}}" alt="{{img_name}} картинка не найдена" style="margin-bottom: 10px; width: 100%;">
+            {% endif %}
+            {% endfor %}
+            <div>
+                <pre style="">{{ news.content }}</pre>
+            </div>
         </div>
         {% endfor %}
     </div>

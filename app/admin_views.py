@@ -12,6 +12,8 @@ from werkzeug.datastructures import CombinedMultiDict
 from flask import render_template, redirect, abort, request
 from flask_login import login_required, login_user, logout_user
 
+USER_SITES = ['/awards', '/news']
+
 
 @login_manager.user_loader
 def load_admin(admin_id: int):
@@ -56,7 +58,10 @@ def admin_page():
 @login_required
 def logout_from_admin():
     logout_user()
-    return redirect("/")
+
+    if '/'.join([''] + request.referrer.split('/')[3:]) in USER_SITES:
+        return redirect(request.referrer)
+    return redirect('/')
 
 
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -117,7 +122,7 @@ def register_admin():
 @login_required
 def edit_news(news_id):
     # TODO:
-    return None
+    return redirect(request.referrer)
 
 
 @app.route('/news/add', methods=["GET", "POST"])
@@ -163,7 +168,7 @@ def add_news():
         session = db_session.create_session()
         session.add(news)
         session.commit()
-        return redirect('/admin/')
+        return redirect('/admin')
     return render_template('news_form.html', **params)
 
 
@@ -172,7 +177,7 @@ def add_news():
 def delete_news_route(news_id: int):
     # Удаление новости
     delete_news(news_id)
-    return redirect('/admin/')
+    return redirect(request.referrer)
 # endregion
 
 
