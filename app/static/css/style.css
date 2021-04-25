@@ -136,10 +136,3 @@ button {
     border-radius: 0px;
     padding-top: 4px;
 }
-
-.news-cards-container {
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}

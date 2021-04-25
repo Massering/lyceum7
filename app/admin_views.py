@@ -3,12 +3,13 @@ from datetime import datetime
 
 from app import app, login_manager, db_session
 from data.__all_models import Admin, News
+from API.news import *
+from API.awards import *
 from forms.admin import AdminLoginForm, AdminRegisterForm
 from forms.news import NewsForm
 
-import requests
-from werkzeug.utils import secure_filename
-from flask import render_template, redirect, abort, send_from_directory, request
+from werkzeug.datastructures import CombinedMultiDict
+from flask import render_template, redirect, abort, request
 from flask_login import login_required, login_user, logout_user
 
 
@@ -23,20 +24,27 @@ def load_admin(admin_id: int):
 @login_required
 def admin_page():
     news_list = []
-    session = db_session.create_session()
-    for news in session.query(News).all():
+    for news in get_news().get("news", []):
         # Короткое описание для новости, чтобы не занимать много места
-        if len(news.content) > 30:
-            short_description = news.content[:30] + '...'
+        if len(news["content"]) > 30:
+            short_description = news["content"][:30] + '...'
         else:
-            short_description = news.content
+            short_description = news["content"]
+        # Определение пути до одной картинки новости, если они есть
+        # (Только одна картинка используется для удобства админа)
+        news_image_filename = news["paths_to_images"].split(';')[0]
+        if news_image_filename:
+            image_path = os.path.join(app.config["UPLOAD_FOLDER"], news_image_filename)
+        else:
+            image_path = ""
         news_list.append({
-            "card_image_path": "",
-            "title": news.title,
+            "id": news["id"],
+            "card_image_path": image_path,
+            "title": news["title"],
             "short_description": short_description,
             # Дата изменения
-            "modified_date": f"{news.modified_date:%H:%M:%S %Y-%m-%d}",
-            "creation_time": f"{news.creation_time:%H:%M:%S %Y-%m-%d}",
+            "modified_date": str(news['modified_date']),
+            "creation_date": str(news['creation_date']),
         })
     params = {
         "news_list": news_list,
@@ -108,51 +116,63 @@ def register_admin():
 @app.route('/news/edit/<int:news_id>')
 @login_required
 def edit_news(news_id):
-    # Получение новости
-    # TODO: выглядит как мусор, лучше сделать что-нибудь лучше
-    news = requests.get(f"news/{news_id}")
-    # TODO: template с формой, где будет редактирование
+    # TODO:
     return None
 
 
 @app.route('/news/add', methods=["GET", "POST"])
 @login_required
 def add_news():
-    form = NewsForm()
+    # Нужно для работы поля MultipleFileField при загрузке файлов
+    # Подробнее: https://flask-wtf.readthedocs.io/en/stable/form.html
+    form = NewsForm(CombinedMultiDict((request.files, request.form)))
+    params = {
+        "message": "",
+        "form": form,
+    }
     if form.validate_on_submit():
         # Создание новости с параметрами
         news = News()
         news.title = form.title.data
         news.content = form.content.data
-        # Обработка загруженных файлов из request.files
+        # Обработка загруженных файлов
         filenames = []
-        files = request.files.getlist("files_field")
-        print(files)
-        print(form.files_field)
-        print(form.files_field.data)
-        for file in files:
-            print(file)
-            print("FUCK YOU")
-            # Получение безопасного имени файла (подробнее в описании secure_filename)
-            filename = secure_filename(file.filename)
-            # TODO: убедится, что в ALLOWED_EXTENSIONS нет фигни
-            if file and filename.split('.')[-1] in app.config["ALLOWED_EXTENSIONS"]:
+        # Абсолютный путь для загрузки, иначе при загрузке будут ошибки
+        app_root = os.path.dirname(os.path.abspath(__file__))
+        upload_dir = os.path.join(app_root, app.config["UPLOAD_FOLDER"])
+        for file in form.files_field.data:
+            filename = file.filename
+            # Проверка на соответствие форматам указанных в конфиге
+            # Проверка на соответствие форматам указанных в конфиге
+            if filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"]:
                 # Сохранение файла и добавление пути до него в список
-                print(app.config['UPLOAD_FOLDER'])
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                filenames.append(filename)
-        news.paths_to_images = ' '.join(filenames)
+                try:
+                    image_path = os.path.join(upload_dir, filename)
+                    file.save(image_path)
+                # Исключение появляется, если размер файла превышает
+                # app.config["MAX_CONTENT_LENGTH"], т.к. в этом случае файл не
+                # сохраняется и его не получается найти, в результате FileNotFoundError
+                except FileNotFoundError as e:
+                    params["message"] = "Загружаемый файл слишком большой"
+                    return render_template('news_form.html', **params)
+                else:
+                    filenames.append(filename)
+
+        news.paths_to_images = ';'.join(filenames)
         # Добавление новости
         session = db_session.create_session()
         session.add(news)
         session.commit()
         return redirect('/admin/')
-    params = {
-        "message": "",
-        "form": form,
-        "news_data": []
-    }
     return render_template('news_form.html', **params)
+
+
+@app.route('/news/delete/<int:news_id>')
+@login_required
+def delete_news_route(news_id: int):
+    # Удаление новости
+    delete_news(news_id)
+    return redirect('/admin/')
 # endregion
 
 
