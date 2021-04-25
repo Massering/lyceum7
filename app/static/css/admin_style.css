@@ -1,0 +1,39 @@
+body {
+    background-color: #272B2E;
+    color: #fff;
+}
+
+.news-cards-container {
+    margin-top: 10px;
+
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.card-normalized {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.card-img {
+    object-fit: cover;
+    margin-top: 8px;
+    border: 2px dashed #fff;
+}
+
+.btn-card {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.content {
+    width: 100%;
+    margin-left: 0.22em;
+    margin-right: 0.22em;
+}
+
+#add_news_button {
+    width: 100%;
+}

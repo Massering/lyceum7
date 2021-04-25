@@ -40,7 +40,7 @@ class News(SqlAlchemyBase, SerializerMixin):
     content = sqlalchemy.Column(sqlalchemy.String)
     # Пути к изображениям новости, через точку с запятой
     paths_to_images = sqlalchemy.Column(sqlalchemy.String, default="")
-    creation_time = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
+    creation_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
     modified_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
 
 
@@ -55,3 +55,4 @@ class Award(SqlAlchemyBase, SerializerMixin):
     direction = sqlalchemy.Column(sqlalchemy.String, default="")
     description = sqlalchemy.Column(sqlalchemy.String, default="")
     creation_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
+    modified_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())

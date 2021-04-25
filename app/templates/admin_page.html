@@ -1,5 +1,97 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
 
-{% block content %}
-<h1>НИЧЕГО НЕТ АААААААААА (страница админа)</h1>
-{% endblock %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="/static/js/bootstrap.js"></script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/admin_style.css"/>
+
+    <title>{{ title }}</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding-left: 15px; height: 60px;">
+            <a class="navbar-brand" href="/"><img src="/static/img/favicon.png" height="60px"></a>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown" style="min-width: 500px;">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Новости</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/awards">Награды</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Сведения о Лицее
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="#">Приём в Лицей</a>
+                            <a class="dropdown-item" href="#">Специализированные классы</a>
+                            <a class="dropdown-item" href="https://lyceum7.eljur.ru/" target="_blank">Электронный журнал</a>
+                        </div>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="" aria-label="Поиск" style="height: 30px;">
+                    <button class="btn" type="submit" style="background-color: transparent; color: #000;">Поиск</button>
+                </form>
+            </div>
+            {% if current_user.is_authenticated %}
+                <a class="navbar-brand" href="/admin/logout">{{ current_user.surname + ' ' + current_user.name }}</a>
+            {% else %}
+                <p>
+                    <a class="btn" href="/admin/login" style="background-color: transparent; color: #000;">Войти</a>
+                </p>
+            {% endif %}
+        </nav>
+    </header>
+    <div class="content">
+        <ul class="nav nav-pills mb-3" id="tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="news-tab" data-toggle="pill" href="#news" role="tab" aria-controls="news" aria-selected="true">Новости</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="awards-tab" data-toggle="pill" href="#awards" role="tab" aria-controls="awards" aria-selected="false">Награды</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="tabContent">
+        <!--Новости-->
+        <div class="tab-pane active" id="news" role="tabpanel" aria-labelledby="news-tab">
+            <a href="/news/add" id="add_news_button" role="button" class="btn btn-primary btn-lg btn-block">Добавить новость</a>
+            <div class="news-cards-container">
+                {% for news in news_list %}
+                    <div class="card card-normalized text-white bg-dark mb-3">
+                        <div class="card-header"> Новость #{{ loop.index }}
+                            <a href="/news/edit/{{ news['id'] }}" role="button" class="btn btn-card btn-outline-warning">Редактировать</a>
+                            <a href="/news/delete/{{ news['id'] }}" onclick="return confirm('Вы уверены?')" role="button" class="btn btn-card btn-outline-danger">Удалить</a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ news["title"] }}</h5>
+                            <p class="card-text">{{ news["short_description"] }}</p>
+                        </div>
+                        <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small class="text-muted">Изменено: {{ news["modified_date"] }}</small></p>
+                        <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small class="text-muted">Создано: {{ news["creation_date"] }}</small></p>
+                        {% if news["card_image_path"] != "" %}
+                            <img class="card-img" src="/{{ news['card_image_path'] }}" alt="">
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!--Награды-->
+        <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">...</div>
+    </div>
+    </div>
+</body>
+</html>
