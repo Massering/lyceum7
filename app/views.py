@@ -22,6 +22,12 @@ def handle_404(error=""):
     return render_template("404.html")
 
 
+@login_manager.unauthorized_handler
+@app.errorhandler(413)
+def handle_413(error=""):
+    return render_template("error.html", error='413', message='Ваш файл слишком большой, вы не можете его прикрепить')
+
+
 @app.route('/')
 @app.route('/index')
 def home_page():

@@ -1,6 +1,3 @@
-html {
-}
-
 body {
     background-color: #888888;
     font-family: "Segoe UI";
@@ -85,15 +82,14 @@ nav {
 .header-block {
     background-image: url("/static/img/school.jpg");
     background-size: cover;
-    background-: center;
+    background-position: center;
     padding: 20px;
 }
 
 .header-text {
     color: #fff;
-    margin-left: 15px;
-    margin-top: 6px;
-    margin-bottom: 6px;
+    margin: 6px 15px 6px 15px;
+    font-size: 1rem;
 }
 
 .news-card {
@@ -121,6 +117,7 @@ a {
 
 .in_text {
     font-weight: 550;
+    padding: 2px;
     white-space: normal;
 }
 
@@ -155,7 +152,6 @@ label {
 }
 
 pre {
-    font-size: 1.2em;
     font-family: 'Segoe UI';
 }
 
