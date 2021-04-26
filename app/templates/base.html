@@ -15,7 +15,7 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 
-    <title>{{ title }}</title>
+    <title>{{ title }} - МАОУ Лицей №7</title>
 </head>
 <body>
 <header>
@@ -35,8 +35,8 @@
                         Информация
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Приём в Лицей</a>
-                        <a class="dropdown-item" href="#">Специализированные классы</a>
+                        <a class="dropdown-item" href="/admission_to_lyceum">Приём в Лицей</a>
+                        <a class="dropdown-item" href="/specialized_classes">Специализированные классы</a>
                         <a class="dropdown-item" href="https://lyceum7.eljur.ru/" target="_blank">Электронный журнал</a>
                     </div>
                 </li>
@@ -70,5 +70,10 @@
 </header>
 <!-- Page content -->
 {% block content %}{% endblock %}
+<!--<footer class="navbar navbar-expand-lg navbar-light bg-light" style="align-text: center; justify-content: center!important;">-->
+<!--    <div class="footer fix p20all fontPO w100 box hide pr" style="text-align: -webkit-center; font-size: 0.9em; line-height: 40px">-->
+<!--        © Муниципальное автономное общеобразовательное учреждение "Лицей №7" г. Красноярска-->
+<!--    </div>-->
+<!--</footer>-->
 </body>
 </html>

@@ -56,3 +56,19 @@ def awards_page():
                               key=lambda i: i.creation_date, reverse=True),
     }
     return render_template('awards_page.html', **params)
+
+
+@app.route('/admission_to_lyceum')
+def admission_to_lyceum():
+    params = {
+        "title": "Прием в лицей",
+    }
+    return render_template('admission_to_lyceum.html', **params)
+
+
+@app.route('/specialized_classes')
+def specialized_classes():
+    params = {
+        "title": "Специализированные классы",
+    }
+    return render_template('specialized_classes.html', **params)

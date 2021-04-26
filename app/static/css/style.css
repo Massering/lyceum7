@@ -1,6 +1,13 @@
+html {
+}
+
 body {
     background-color: #888888;
     font-family: "Segoe UI";
+    font-size: 1.2em;
+
+	position: relative;
+	height: 100%;
 }
 
 form {
@@ -14,7 +21,11 @@ form {
 nav {
     padding: 0px;
     min-height: 50px;
+
     background-color: #eeeefe;
+
+    font-size: 0.90em;
+
     box-shadow:0px 2px 16px 0px rgba(0,0,0,0.25);
     -webkit-box-shadow:0px 2px 16px 0px rgba(0,0,0,0.25);
     -moz-box-shadow:0px 2px 16px 0px rgba(0,0,0,0.25);
@@ -42,11 +53,11 @@ nav {
 
 .main {
     margin-top: -30px;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
     padding: 50px;
     max-width: 1100px;
 
-    background-color: #e7e7e7;
+    background-color: #ececec;
 
     border: 0px solid gray;
     border-color: #333333;
@@ -102,10 +113,15 @@ nav {
 }
 
 a {
-    text-decoration: none;
+    text-decoration: none!important;
     white-space: nowrap;
     cursor: pointer;
     color: #050505;
+}
+
+.in_text {
+    font-weight: 550;
+    white-space: normal;
 }
 
 .dropdown-item {
@@ -125,18 +141,17 @@ a {
 }
 
 p {
-    margin-bottom: 0px;
+    margin-bottom: 1rem;
 }
 
 h1 {
 }
 
 h2 {
-    color: #555555;
+    color: #333;
 }
 
 label {
-    font-size: 1.3em;
 }
 
 pre {
