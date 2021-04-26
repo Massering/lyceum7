@@ -1,6 +1,32 @@
 body {
     background-color: #272B2E;
     color: #fff;
+    font-family: 'Segoe UI';
+}
+
+a {
+    border: none;
+    color: #fff;
+}
+
+.dropdown {
+    color: #050505;
+}
+
+.content {
+    width: 100%;
+    margin-left: 0.22em;
+    margin-right: 0.22em;
+}
+
+.text-date {
+    font-size: 1.25em;
+    color: #555555;
+}
+
+.news-content {
+    font-size: 1.6em;
+    color: #555555;
 }
 
 .news-cards-container {
@@ -28,12 +54,11 @@ body {
     margin-right: 4px;
 }
 
-.content {
-    width: 100%;
-    margin-left: 0.22em;
-    margin-right: 0.22em;
+.btn {
+    border-color: currentcolor;
 }
 
 #add_news_button {
+    border: none;
     width: 100%;
 }

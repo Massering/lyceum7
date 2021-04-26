@@ -3,7 +3,7 @@ from datetime import datetime
 from data import db_session
 from data.__all_models import News
 
-from sqlalchemy.exc import InvalidRequestError, IntegrityError
+from sqlalchemy.exc import InvalidRequestError
 
 
 # Сообщения об ошибках:
@@ -19,7 +19,7 @@ def _get_news_by_id(news_id: int):
     (Функция не является частью API новостей, а нужна для его работы)
     """
     session = db_session.create_session()
-    result = session.query(News).get(news_id)
+    result = session.query(News).filter(News.id == news_id).one()
     # Закрытие сессии, чтобы не возникало ошибок
     # при попытке изменить/удалить найденый объект
     session.close()
@@ -44,15 +44,17 @@ def get_news(news_id=-1) -> dict:
                 "news": [news_item.to_dict(
                     only=("id", "title", "content", "paths_to_images",
                           "creation_date", "modified_date"))
-                for news_item in session.query(News).all()]}
+                    for news_item in session.query(News).all()]}
     # Проверка типа
     elif not isinstance(news_id, int):
         return {"success": False,
+                "news": [],
                 "error": INCORRECT_PARAM_TYPE.format(news_id)}
     # Возвращение словаря с новостью по id если она существует
     news = _get_news_by_id(news_id)
     if news is None:
         return {"success": False,
+                "news": [],
                 "error": NEWS_NOT_EXIST.format(news_id)}
     return {"success": True, "news": news.to_dict(
         only=("id", "title", "content", "paths_to_images",
@@ -92,10 +94,14 @@ def put_news(news_id: int, new_title: str, new_content: str, new_paths_to_images
     {"success": True/False,
     "error": *значение ошибки, если произошла ошибка* (не обязательное поле)}
     """
-    # Получение новости и переопределение параметров
-    news = _get_news_by_id(news_id)
+    # Получение новости происходить отдельно
+    # Т.к. обычное получение новости через _get_news_by_id закрывает сессию и
+    # сохранить изменения не возможно
+    session = db_session.create_session()
+    news = session.query(News).filter(News.id == news_id).one()
     if news is None:
         return {"success": False, "error": NEWS_NOT_EXIST}
+    # Переопределение параметров
     news.title = new_title
     news.content = new_content
     news.paths_to_images = new_paths_to_images

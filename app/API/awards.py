@@ -3,7 +3,7 @@ from datetime import datetime
 from data import db_session
 from data.__all_models import Award
 
-from sqlalchemy.exc import InvalidRequestError, IntegrityError
+from sqlalchemy.exc import InvalidRequestError
 
 
 # Сообщения об ошибках:
@@ -26,30 +26,19 @@ def _get_award_by_id(award_id: int) -> Award:
     return result
 
 
-def get(award_id=-1) -> dict:
-    """Функция возвращает словарь со всеми наградами,
-    либо словарь с одной наградой, если указан её id.
+def get_award(award_id: int) -> dict:
+    """Функция возвращает словарь с одной наградой по id.
 
-    :param award_id: ID награды, если не указан, то передаются все награды
+    :param award_id: ID награды
     :return: Словарь вида вида:
     {"success": True/False,
-    "award": *либо одна награда или список с наградами в виде словаря*,
+    "award": *словарь с полями награды*,
     "error": *значение ошибки, если произошла ошибка* (не обязательное поле)}
     """
-    session = db_session.create_session()
-    # Проверка указан ли id
-    if award_id == -1:
-        # Словарб со всеми наградами
-        return {"success": True,
-                "award": [award.to_dict(
-                    only=("id", "title", "image_filename",
-                          "direction", "description", "creation_date"))
-                    for award in session.query(Award).all()]}
-    # Проверка типа
-    elif not isinstance(award_id, int):
+    # Проверка типа параметра
+    if not isinstance(award_id, int):
         return {"success": False,
                 "error": INCORRECT_PARAM_TYPE.format(award_id)}
-    # Возвращение словаря с наградой по id если она существует
     award = _get_award_by_id(award_id)
     if award is None:
         return {"success": False,
@@ -59,7 +48,22 @@ def get(award_id=-1) -> dict:
               "direction", "description", "creation_date"))}
 
 
-def delete(award_id: int) -> dict:
+def get_awards() -> list:
+    """Функция возвращает словарь со всеми наградами.
+
+    :return: Словарь вида вида:
+    {"success": True/False,
+    "award": *список словарей с полями награды*,
+    "error": *значение ошибки, если произошла ошибка* (не обязательное поле)}
+    """
+    session = db_session.create_session()
+    return [award.to_dict(
+        only=("id", "title", "image_filename", "direction",
+              "description", "creation_date"))
+            for award in session.query(Award).all()]
+
+
+def delete_award(award_id: int) -> dict:
     """Функция удаляет награду по id и возвращает
     словарь с данными результата.
 
@@ -79,8 +83,8 @@ def delete(award_id: int) -> dict:
     return {"success": True}
 
 
-def put(award_id: int, new_title: str, new_image_filename: str,
-        new_direction: str, new_description: str) -> dict:
+def put_award(award_id: int, new_title: str, new_image_filename: str,
+              new_direction: str, new_description: str) -> dict:
     """Функция меняет параметры награды по id на новые
     и возвращает словарь с данными результата.
 
@@ -107,10 +111,10 @@ def put(award_id: int, new_title: str, new_image_filename: str,
     return {"success": True}
 
 
-def post(title: str, image_filename: str,
-         direction: str, description: str,
-         creation_time=datetime.now(),
-         modified_date=datetime.now()) -> None:
+def post_award(title: str, image_filename: str,
+               direction: str, description: str,
+               creation_time=datetime.now(),
+               modified_date=datetime.now()) -> None:
     """Функция добавляет награду в БД по переданным параметрам.
 
     :param title: Заголовок награды

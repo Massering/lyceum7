@@ -15,7 +15,7 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 
-    <title>{{ title }}</title>
+    <title>{{ title }} - МАОУ Лицей №7</title>
 </head>
 <body>
 <header>
@@ -35,17 +35,12 @@
                         Информация
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Приём в Лицей</a>
-                        <a class="dropdown-item" href="#">Специализированные классы</a>
+                        <a class="dropdown-item" href="/admission_to_lyceum">Приём в Лицей</a>
+                        <a class="dropdown-item" href="/specialized_classes">Специализированные классы</a>
                         <a class="dropdown-item" href="https://lyceum7.eljur.ru/" target="_blank">Электронный журнал</a>
                     </div>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Введите запрос" aria-label="Поиск"
-                       style="height: 30px;">
-                <button class="btn" type="submit" style="background-color: transparent; color: #000;">Поиск</button>
-            </form>
         </div>
         {% if current_user.is_authenticated %}
         <div class="nav-item dropdown">

@@ -9,10 +9,18 @@ from forms.admin import AdminLoginForm, AdminRegisterForm
 from forms.news import NewsForm
 
 from werkzeug.datastructures import CombinedMultiDict, FileStorage
-from flask import render_template, redirect, abort, request
-from flask_login import login_required, login_user, logout_user
+from flask import render_template, redirect, abort, request, url_for
+from flask_login import login_required, login_user, logout_user, current_user
+
 
 USER_SITES = ['/awards', '/news']
+
+
+# Обработка ошибки, возникающей при загрузки слишком большого файла
+@app.errorhandler(413)
+def handle_413(error=""):
+    # TODO: к чёрту, это проблема не для меня из 26.04
+    return redirect('/403')
 
 
 @login_manager.user_loader
@@ -26,7 +34,8 @@ def load_admin(admin_id: int):
 @login_required
 def admin_page():
     news_list = []
-    for news in sorted(get_news().get("news", []), key=lambda i: i['id'], reverse=True):
+    for news in sorted(get_news()["news"],
+                       key=lambda x: x["creation_date"], reverse=True):
         # Короткое описание для новости, чтобы не занимать много места
         if len(news["content"]) > 30:
             short_description = news["content"][:30] + '...'
@@ -34,7 +43,7 @@ def admin_page():
             short_description = news["content"]
         # Определение пути до одной картинки новости, если они есть
         # (Только одна картинка используется для удобства админа)
-        news_image_filename = news["paths_to_images"].split(';')[0]
+        news_image_filename = news['paths_to_images'].split(';')[0]
         if news_image_filename:
             image_path = os.path.join(app.config["UPLOAD_FOLDER"], news_image_filename)
         else:
@@ -49,7 +58,7 @@ def admin_page():
             "creation_date": str(news['creation_date']),
         })
     params = {
-        "title": "Страница админа",
+        "title": "Страница администратора",
         "news_list": news_list,
     }
     return render_template('admin_page.html', **params)
@@ -68,21 +77,27 @@ def logout_from_admin():
 @app.route('/admin/login', methods=['GET', 'POST'])
 def login_to_admin():
     form = AdminLoginForm()
+    params = {
+        "form": form,
+        "title": "Вход",
+        "message": "",
+    }
     if form.validate_on_submit():
         session = db_session.create_session()
         admin_user = session.query(Admin).filter(Admin.login == form.login.data).first()
         if admin_user and admin_user.check_password(form.password.data):
             login_user(admin_user, remember=form.remember_me.data)
             return redirect('/admin/index')
-        return render_template('admin_login.html', form=form, title='Вход',
-                               message="Неправильный логин или пароль")
-    return render_template('admin_login.html', title='Вход', form=form)
+        params["message"] = "Неправильный логин или пароль"
+        return render_template('admin_login.html', **params)
+    return render_template('admin_login.html', **params)
 
 
 @app.route('/admin/register', methods=['GET', 'POST'])
 def register_admin():
-    # Если включён решим debug, то можно добавить админа, иначе 404
-    if app.config.get("DEBUG", False):
+    # Если включён решим debug или выполнен вход в аккаунт
+    # то можно добавить админа, иначе 404
+    if app.config.get("DEBUG", False) or current_user.is_authenticated:
         form = AdminRegisterForm()
         if form.validate_on_submit():
             if form.password.data != form.password_again.data:
@@ -125,68 +140,43 @@ def edit_news(news_id):
     # Нужно для работы поля MultipleFileField при загрузке файлов
     # Подробнее: https://flask-wtf.readthedocs.io/en/stable/form.html
     form = NewsForm(CombinedMultiDict((request.files, request.form)))
+    news = get_news(news_id)["news"]
     params = {
         "title": "Редактирование новости",
         "message": "",
         "form": form,
     }
+    # Установка текущих данных новости (кроме картинок, это не нужно, они
+    # выбираются заного), только при GET запросе, чтобы не переопределить новые
+    # данные при POST запросе
+    if request.method == "GET":
+        form.title.data = news["title"]
+        form.content.data = news["content"]
+
     if form.validate_on_submit():
-        # Создание новости с параметрами
-        session = db_session.create_session()
-        news = session.query(News).get(news_id)
-        news.title = form.title.data
-        news.content = form.content.data
+        new_title = form.title.data
+        new_content = form.content.data
         # Обработка загруженных файлов
-        filenames = []
+        new_filenames = []
         # Абсолютный путь для загрузки, иначе при загрузке будут ошибки
         app_root = os.path.dirname(os.path.abspath(__file__))
         upload_dir = os.path.join(app_root, app.config["UPLOAD_FOLDER"])
-        print(form.files_field.data[0])
         for file in form.files_field.data:
-            filename = file.filename
+            filename = f"news_img/{file.filename}"
             # Проверка на соответствие форматам указанных в конфиге
             # Проверка на соответствие форматам указанных в конфиге
             if filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"]:
                 # Сохранение файла и добавление пути до него в список
-                try:
-                    image_path = os.path.join(upload_dir, filename)
-                    file.save(image_path)
-                # Исключение появляется, если размер файла превышает
-                # app.config["MAX_CONTENT_LENGTH"], т.к. в этом случае файл не
-                # сохраняется и его не получается найти, в результате FileNotFoundError
-                except FileNotFoundError:
-                    params["message"] = "Загружаемый файл слишком большой"
-                    return render_template('news_form.html', **params)
-                else:
-                    filenames.append(filename)
+                image_path = os.path.join(upload_dir, filename)
+                file.save(image_path)
+                new_filenames.append(filename)
 
-        news.paths_to_images = ';'.join(filenames)
-        # Добавление новости
-        session.commit()
+        new_paths_to_images = ';'.join(new_filenames)
+        # Изменение параметров у новости
+        put_news(news_id, new_title, new_content, new_paths_to_images)
         return redirect('/admin')
 
-    session = db_session.create_session()
-    news = session.query(News).get(news_id)
-    form.title.data = news.title
-    form.content.data = news.content
-
-    # TODO: Обратное прикрепление файлов
-    # Обработка загруженных файлов
-    form.files_field.data = []
-    for filename in news.paths_to_images.split(';'):
-        if filename:
-            # Абсолютный путь для загрузки, иначе при загрузке будут ошибки
-            app_root = os.path.dirname(os.path.abspath(__file__))
-            upload_dir = os.path.join(app_root, app.config["UPLOAD_FOLDER"])
-
-            file_content = open(upload_dir + '\\' + filename, 'r')
-            file = FileStorage(file_content, filename, file_content.name, "image/" + filename.split('.')[-1],
-                               os.path.getsize(upload_dir + '\\' + filename))
-            print(file, file.headers)
-
-            form.files_field.data.append(file)
-
-    return render_template('news_form.html', **params)
+    return render_template('news_form_edit.html', **params)
 
 
 @app.route('/news/add', methods=["GET", "POST"])
@@ -211,22 +201,15 @@ def add_news():
         app_root = os.path.dirname(os.path.abspath(__file__))
         upload_dir = os.path.join(app_root, app.config["UPLOAD_FOLDER"])
         for file in form.files_field.data:
-            filename = file.filename
-            # Проверка на соответствие форматам указанных в конфиге
+            # Имя файла содержит id новости, чтобы при большом количестве новостей
+            # картинки с одинаковыми именами не перезаписывали друг друга
+            filename = f"news_img/{file.filename}"
             # Проверка на соответствие форматам указанных в конфиге
             if filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"]:
                 # Сохранение файла и добавление пути до него в список
-                try:
-                    image_path = os.path.join(upload_dir, filename)
-                    file.save(image_path)
-                # Исключение появляется, если размер файла превышает
-                # app.config["MAX_CONTENT_LENGTH"], т.к. в этом случае файл не
-                # сохраняется и его не получается найти, в результате FileNotFoundError
-                except FileNotFoundError as e:
-                    params["message"] = "Загружаемый файл слишком большой"
-                    return render_template('news_form.html', **params)
-                else:
-                    filenames.append(filename)
+                image_path = os.path.join(upload_dir, filename)
+                file.save(image_path)
+                filenames.append(filename)
 
         news.paths_to_images = ';'.join(filenames)
         # Добавление новости
