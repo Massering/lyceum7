@@ -3,7 +3,7 @@
 {% block content %}
 <form class="main">
     <h2 style="margin-top: 10px; margin-bottom: 20px; text-align: center;">Достижения</h2>
-    <div class="awards_block container">
+    <div class="awards_block row row-cols-3 row-cols-md-3 g-4">
         {% for award in awards_list %}
         <div class="award_card card card-normalized mb-3">
 
@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </a>
-            <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small class="text-muted">{{
+            <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small>{{
                 award.creation_date }}</small></p>
         </div>
         {% endfor %}

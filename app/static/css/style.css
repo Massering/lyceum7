@@ -1,3 +1,7 @@
+html {
+    #mix-blend-mode: exclusion;
+}
+
 body {
     background-color: #888888;
     font-family: "Segoe UI";
@@ -140,7 +144,7 @@ a {
 }
 
 .awards_block {
-    padding: 10px;
+    padding: 25px;
 
     align-items: left;
     display: flex;
@@ -151,7 +155,7 @@ a {
     width: 250px;
     height: 330px;
 
-    margin: auto;
+    margin: 10px;
 
     background-color: #cccccc;
 
