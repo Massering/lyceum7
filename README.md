@@ -21,7 +21,7 @@
 - run_server.py – файл, запускающий сервер
 
 # Установка и запуск
-Для начало надо склонировать git репозиторий:
+Для начала надо склонировать git репозиторий:
 ```shell script
 git clone https://github.com/Massering/lyceum7.git
 ```
