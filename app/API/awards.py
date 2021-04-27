@@ -19,7 +19,7 @@ def _get_award_by_id(award_id: int) -> Award:
     (Функция не является частью API наград, а нужна для его работы)
     """
     session = db_session.create_session()
-    result = session.query(Award).get(award_id)
+    result = session.query(Award).filter(Award.id == award_id).one()
     # Закрытие сессии, чтобы не возникало ошибок
     # при попытке изменить/удалить найденый объект
     session.close()
@@ -48,19 +48,17 @@ def get_award(award_id: int) -> dict:
               "direction", "description", "creation_date"))}
 
 
-def get_awards() -> list:
+def get_awards() -> dict:
     """Функция возвращает словарь со всеми наградами.
 
     :return: Словарь вида вида:
-    {"success": True/False,
-    "award": *список словарей с полями награды*,
-    "error": *значение ошибки, если произошла ошибка* (не обязательное поле)}
+    {"awards": *данные* }
     """
     session = db_session.create_session()
-    return [award.to_dict(
+    return {"awards": [award.to_dict(
         only=("id", "title", "image_filename", "direction",
               "description", "creation_date"))
-            for award in session.query(Award).all()]
+            for award in session.query(Award).all()]}
 
 
 def delete_award(award_id: int) -> dict:
@@ -97,23 +95,27 @@ def put_award(award_id: int, new_title: str, new_image_filename: str,
     {"success": True/False,
     "error": *значение ошибки, если произошла ошибка* (не обязательное поле)}
     """
-    # Получение награды и переопределение параметров
-    award = _get_award_by_id(award_id)
+    # Получение новости происходить отдельно
+    # Т.к. обычное получение новости через _get_award_by_id закрывает сессию и
+    # сохранить изменения не возможно
+    session = db_session.create_session()
+    award = session.query(Award).filter(Award.id == award_id).one()
     if award is None:
-        return {"success": False, "error": AWARD_NOT_EXIST}
+        return {"success": False, "error": NEWS_NOT_EXIST}
+    # Переопределение параметров
     award.title = new_title
-    award.image_filename = new_image_filename
     award.direction = new_direction
     award.description = new_description
+    award.image_filename = new_image_filename
     # Дата редактирования меняется автоматически
     award.modified_date = datetime.now()
     session.commit()
     return {"success": True}
 
 
-def post_award(title: str, image_filename: str,
-               direction: str, description: str,
-               creation_time=datetime.now(),
+def post_award(title: str, direction: str, description: str,
+               image_filename="",
+               creation_date=datetime.now(),
                modified_date=datetime.now()) -> None:
     """Функция добавляет награду в БД по переданным параметрам.
 
@@ -121,7 +123,7 @@ def post_award(title: str, image_filename: str,
     :param image_filename: Пути к изображению для награды
     :param direction: Направление награды
     :param description: Содержание награды
-    :param creation_time: Время создании награды (по умолчанию текущее время)
+    :param creation_date: Время создании награды (по умолчанию текущее время)
     :param modified_date: Время последнего изменения награды (по умолчанию текущее время)
     :return: None
     """
@@ -131,7 +133,7 @@ def post_award(title: str, image_filename: str,
         description=description,
         direction=direction,
         image_filename=image_filename,
-        creation_time=creation_time,
+        creation_date=creation_date,
         modified_date=modified_date,
     )
     session.add(award)

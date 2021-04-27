@@ -128,6 +128,7 @@ def post_news(title: str, content: str, paths_to_images="",
         title=title,
         content=content,
         creation_date=creation_date,
+        paths_to_images=paths_to_images,
         modified_date=modified_date,
     )
     session.add(news)

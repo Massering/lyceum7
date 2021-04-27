@@ -5,7 +5,7 @@
 # Иерархия файлов
 - alembic – папка с файлами миграций БД.Содержимое генерируется автоматически, поэтому руками лезть
     только в исключительных случаях
-- app – папка с приложением, которое считается как python пакет (за счёт наличия 
+- app – папка с содержимым приложения Flask, которое считается как python пакет (за счёт наличия 
     [`__init__.py`](https://github.com/Massering/lyceum7/blob/master/app/__init__.py)) 
     при запуске из 
     [`run_server.py`](https://github.com/Massering/lyceum7/blob/master/run_server.py)
@@ -20,7 +20,18 @@
 - requirements.txt – файл с необходимыми python пакетами
 - run_server.py – файл, запускающий сервер
 
-## Установка дополнительных python пакетов
+# Установка и запуск
+Для начало надо склонировать git репозиторий:
+```shell script
+git clone https://github.com/Massering/lyceum7.git
+```
+Затем перейдите в папку с проектом и установите необходимые python пакеты:
 ```shell script
 pip install -r requirements.txt
+```
+После, предварительно настроив параметры в [`config.py`](https://github.com/Massering/lyceum7/blob/master/config.py)
+и в [`.env`](https://github.com/Massering/lyceum7/blob/master/.env)
+, можно спокойно запустить сервер, выполнив:
+```shell script
+python run_server.py
 ```

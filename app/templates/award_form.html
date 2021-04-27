@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form class="standard" action="" method="post" enctype="multipart/form-data">
-    <h2>Редактирование новости</h2>
+<form class="standard" method="POST" enctype="multipart/form-data">
+    <h2>{{ title }}</h2>
     <br>
     {{ form.hidden_tag() }}
     <p>
@@ -15,18 +15,27 @@
         {% endfor %}
     </p>
     <p>
-        {{ form.content.label }}<br>
-        {{ form.content(class="form-control", style="height: 300px") }}<br>
-        {% for error in form.content.errors %}
+        {{ form.description.label }}<br>
+        {{ form.description(class="form-control", style="height: 300px") }}<br>
+        {% for error in form.description.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
         {% endfor %}
     </p>
     <p>
-        {{ form.files_field.label }}<br>
-        {{ form.files_field(class="form-control file-input") }}<br>
-        {% for error in form.files_field.errors %}
+        {{ form.direction.label }}<br>
+        {{ form.direction(class="form-control") }}<br>
+        {% for error in form.direction.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.file_field.label }}<br>
+        {{ form.file_field(class="form-control file-input") }}<br>
+        {% for error in form.file_field.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>

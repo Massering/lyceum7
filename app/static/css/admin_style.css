@@ -29,7 +29,7 @@ a {
     color: #555555;
 }
 
-.news-cards-container {
+.cards-container {
     margin-top: 10px;
 
     display: flex;
@@ -58,7 +58,7 @@ a {
     border-color: currentcolor;
 }
 
-#add_news_button {
+#add_news_button, #add_award_button {
     border: none;
     width: 100%;
 }

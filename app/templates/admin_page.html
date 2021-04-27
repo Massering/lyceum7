@@ -16,7 +16,7 @@
         <!--Новости-->
         <div class="tab-pane active" id="news" role="tabpanel" aria-labelledby="news-tab">
             <a href="/news/add" id="add_news_button" role="button" class="btn btn-primary btn-lg btn-block">Добавить новость</a>
-            <div class="news-cards-container">
+            <div class="cards-container">
                 {% for news in news_list %}
                     <div class="card card-normalized text-white bg-dark mb-3">
                         <div class="card-header"> Новость #{{ loop.index }}
@@ -38,7 +38,29 @@
         </div>
 
         <!--Награды-->
-        <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">...</div>
+        <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">
+            <a href="/award/add" id="add_award_button" role="button" class="btn btn-primary btn-lg btn-block">Добавить награду</a>
+            <div class="cards-container">
+                {% for award in awards %}
+                    <div class="card card-normalized text-white bg-dark mb-3">
+                        <div class="card-header"> Награда #{{ loop.index }}
+                            <a href="/award/edit/{{ award['id'] }}" role="button" class="btn btn-card btn-outline-warning">Редактировать</a>
+                            <a href="/award/delete/{{ award['id'] }}" onclick="return confirm('Вы уверены?')" role="button" class="btn btn-card btn-outline-danger">Удалить</a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ award["title"] }}</h5>
+                            <p class="card-text">{{ award["direction"] }}</p>
+                            <pre style="color: #fff;" class="card-text">{{ award["description"] }}</pre>
+                        </div>
+                        <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small class="text-muted">Изменено: {{ award["modified_date"] }}</small></p>
+                        <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small class="text-muted">Создано: {{ award["creation_date"] }}</small></p>
+                        {% if award["image_filename"] %}
+                            <img class="card-img" src="/{{ award['image_filename'] | format_filepath }}" alt="">
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
     </div>
 {% endblock %}

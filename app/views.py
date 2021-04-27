@@ -17,7 +17,14 @@ def handle_404(error=""):
 @login_manager.unauthorized_handler
 @app.errorhandler(413)
 def handle_413(error=""):
-    return render_template("error.html", error='413', message='Ваш файл слишком большой, вы не можете его прикрепить')
+    return render_template("error.html", error='413',
+                           message='Ваш файл слишком большой, вы не можете его прикрепить')
+
+
+# Фильтр для преобразования пути до файла с учётом загрузочной директории
+@app.template_filter("format_filepath")
+def format_filepath(path: str) -> str:
+    return os.path.join(app.config["UPLOAD_FOLDER"], path)
 
 
 @app.route('/')
@@ -47,7 +54,7 @@ def news_page():
 def awards_page():
     params = {
         "title": "Достижения",
-        "awards_list": sorted(get_awards(),
+        "awards_list": sorted(get_awards()["awards"],
                               key=lambda x: x["creation_date"], reverse=True),
     }
     return render_template('awards_page.html', **params)

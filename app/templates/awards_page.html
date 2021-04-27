@@ -6,7 +6,11 @@
         <h2 style="margin-top: 10px; margin-bottom: 20px; text-align: center;">Достижения</h2>
         {% for award in awards_list %}
         <div class="award_card">
-            <h4>{{ award.title }}</h4>
+            <h1>{{ award["title"] }}</h1>
+            <h4>{{ award["direction"] }}</h4>
+            <pre>{{ award["description"] }}</pre>
+            <h1>КАРТИНОК НЕ БУДЕТ ОНИ УМИРАЮТ</h1>
+            <img src="{{ award['image_filename'] | format_filepath}}" alt="">
         </div>
         {% endfor %}
     </div>

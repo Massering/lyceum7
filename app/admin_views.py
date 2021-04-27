@@ -2,11 +2,12 @@ import os
 from datetime import datetime
 
 from app import app, login_manager, db_session
-from data.__all_models import Admin, News
+from data.__all_models import Admin
 from API.news import *
 from API.awards import *
 from forms.admin import AdminLoginForm, AdminRegisterForm
 from forms.news import NewsForm
+from forms.award import AwardForm
 
 from werkzeug.datastructures import CombinedMultiDict, FileStorage
 from flask import render_template, redirect, abort, request, url_for
@@ -16,23 +17,16 @@ from flask_login import login_required, login_user, logout_user, current_user
 USER_SITES = ['/awards', '/news']
 
 
-# Обработка ошибки, возникающей при загрузки слишком большого файла
-@app.errorhandler(413)
-def handle_413(error=""):
-    # TODO: к чёрту, это проблема не для меня из 26.04
-    return redirect('/403')
-
-
+# Функция загрузки аккаунта для login_manager
 @login_manager.user_loader
 def load_admin(admin_id: int):
     session = db_session.create_session()
-    return session.query(Admin).get(admin_id)
+    return session.query(Admin).filter(Admin.id == admin_id).one()
 
 
-@app.route('/admin/')
-@app.route('/admin/index')
-@login_required
-def admin_page():
+# Функция получения данных новости специально для карточек в админке
+# (Нужно, т.к. для удобства отобрадение наград в админке отличается)
+def get_news_for_cards() -> list:
     news_list = []
     for news in sorted(get_news()["news"],
                        key=lambda x: x["creation_date"], reverse=True):
@@ -57,9 +51,25 @@ def admin_page():
             "modified_date": str(news['modified_date']),
             "creation_date": str(news['creation_date']),
         })
+    return news_list
+
+
+# Фильтр для преобразования пути до файла с учётом загрузочной директории
+@app.template_filter("format_filepath")
+def format_filepath(path: str) -> str:
+    return os.path.join(app.config["UPLOAD_FOLDER"], path)
+
+
+# region admin
+@app.route('/admin/')
+@app.route('/admin/index')
+@login_required
+def admin_page():
+    # Параметры для админки
     params = {
         "title": "Страница администратора",
-        "news_list": news_list,
+        "news_list": get_news_for_cards(),
+        "awards": get_awards()["awards"],
     }
     return render_template('admin_page.html', **params)
 
@@ -129,6 +139,7 @@ def register_admin():
             redirect('/admin/login')
         return render_template('admin_register.html', title='Регистрация', form=form)
     abort(404)
+# endregion
 
 
 # Т.к. менять/удалять/добавлять новости может только админ,
@@ -137,7 +148,7 @@ def register_admin():
 @app.route('/news/edit/<int:news_id>', methods=["GET", "POST"])
 @login_required
 def edit_news(news_id):
-    # Нужно для работы поля MultipleFileField при загрузке файлов
+    # Нужно для загрузки файлов
     # Подробнее: https://flask-wtf.readthedocs.io/en/stable/form.html
     form = NewsForm(CombinedMultiDict((request.files, request.form)))
     news = get_news(news_id)["news"]
@@ -147,7 +158,7 @@ def edit_news(news_id):
         "form": form,
     }
     # Установка текущих данных новости (кроме картинок, это не нужно, они
-    # выбираются заного), только при GET запросе, чтобы не переопределить новые
+    # выбираются заново), только при GET запросе, чтобы не переопределить новые
     # данные при POST запросе
     if request.method == "GET":
         form.title.data = news["title"]
@@ -176,13 +187,13 @@ def edit_news(news_id):
         put_news(news_id, new_title, new_content, new_paths_to_images)
         return redirect('/admin')
 
-    return render_template('news_form_edit.html', **params)
+    return render_template('news_form.html', **params)
 
 
 @app.route('/news/add', methods=["GET", "POST"])
 @login_required
 def add_news():
-    # Нужно для работы поля MultipleFileField при загрузке файлов
+    # Нужно для загрузки файлов
     # Подробнее: https://flask-wtf.readthedocs.io/en/stable/form.html
     form = NewsForm(CombinedMultiDict((request.files, request.form)))
     params = {
@@ -191,10 +202,9 @@ def add_news():
         "form": form,
     }
     if form.validate_on_submit():
-        # Создание новости с параметрами
-        news = News()
-        news.title = form.title.data
-        news.content = form.content.data
+        # Базовые параметры для новости
+        title = form.title.data
+        content = form.content.data
         # Обработка загруженных файлов
         filenames = []
         # Абсолютный путь для загрузки, иначе при загрузке будут ошибки
@@ -211,11 +221,9 @@ def add_news():
                 file.save(image_path)
                 filenames.append(filename)
 
-        news.paths_to_images = ';'.join(filenames)
+        paths_to_images = ';'.join(filenames)
         # Добавление новости
-        session = db_session.create_session()
-        session.add(news)
-        session.commit()
+        post_news(title, content, paths_to_images)
         return redirect('/admin')
     return render_template('news_form.html', **params)
 
@@ -225,12 +233,103 @@ def add_news():
 def delete_news_route(news_id: int):
     # Удаление новости
     delete_news(news_id)
-    return redirect(request.referrer)
+    return redirect('/admin')
 # endregion
 
 
 # Т.к. менять/удалять/добавлять награды может только админ,
 # то и соответствующие route'ы находятся здесь
 # region awards
-# TODO: П А М А Г И Т Е
+@app.route('/award/edit/<int:award_id>', methods=["GET", "POST"])
+@login_required
+def edit_award(award_id):
+    # Нужно для загрузки файлов
+    # Подробнее: https://flask-wtf.readthedocs.io/en/stable/form.html
+    form = AwardForm(CombinedMultiDict((request.files, request.form)))
+    award = get_award(award_id)["award"]
+    params = {
+        "title": "Редактирование награды",
+        "message": "",
+        "form": form,
+    }
+    # Установка текущих данных награды (кроме картинки, это не нужно, она
+    # выбирается заново), только при GET запросе, чтобы не переопределить
+    # данные при POST запросе
+    if request.method == "GET":
+        form.title.data = award["title"]
+        form.direction.data = award["direction"]
+        form.description.data = award["description"]
+
+    if form.validate_on_submit():
+        # Новые данные
+        new_title = form.title.data
+        new_direction = form.direction.data
+        new_description = form.description.data
+        # Обработка загруженного файла
+        # Абсолютный путь для загрузки, иначе при загрузке будут ошибки
+        app_root = os.path.dirname(os.path.abspath(__file__))
+        upload_dir = os.path.join(app_root, app.config["UPLOAD_FOLDER"])
+        # Получение файла и его имени
+        file = form.file_field.data
+        # Проверка на соответствие форматам указанных в конфиге
+        if file.filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"]:
+            new_filename = f"award_img/{file.filename}"
+            # Сохранение файла и добавление пути до него в список
+            image_path = os.path.join(upload_dir, new_filename)
+            file.save(image_path)
+            new_image_filename = new_filename
+        else:
+            new_image_filename = ""
+
+        # Изменение параметров у награды
+        put_award(award_id, new_title, new_image_filename,
+                  new_direction, new_description)
+        return redirect('/admin')
+
+    return render_template('award_form.html', **params)
+
+
+@app.route('/award/add', methods=["GET", "POST"])
+@login_required
+def add_award():
+    # Нужно для загрузки файлов
+    # Подробнее: https://flask-wtf.readthedocs.io/en/stable/form.html
+    form = AwardForm(CombinedMultiDict((request.files, request.form)))
+    params = {
+        "title": "Добавление награды",
+        "message": "",
+        "form": form,
+    }
+    if form.validate_on_submit():
+        # Базовые параметры
+        title = form.title.data
+        direction = form.direction.data
+        description = form.description.data
+        # Обработка загруженного файла
+        # Абсолютный путь для загрузки, иначе при загрузке будут ошибки
+        app_root = os.path.dirname(os.path.abspath(__file__))
+        upload_dir = os.path.join(app_root, app.config["UPLOAD_FOLDER"])
+        # Получение файла и его имени
+        file = form.file_field.data
+        # Проверка на соответствие форматам указанных в конфиге
+        if file.filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"]:
+            filename = f"award_img/{file.filename}"
+            # Сохранение файла и добавление пути до него в список
+            image_path = os.path.join(upload_dir, filename)
+            file.save(image_path)
+            image_filename = filename
+        else:
+            image_filename = ""
+        # Добавление награды
+        post_award(title, direction, description, image_filename)
+        return redirect('/admin')
+    return render_template('award_form.html', **params)
+
+
+@app.route('/award/delete/<int:award_id>')
+@login_required
+def delete_award_route(award_id: int):
+    # Удаление награды
+    delete_award(award_id)
+    return redirect('/admin')
 # endregion
