@@ -2,15 +2,22 @@
 
 {% block content %}
 <form class="main">
-    <div class="awardsblock">
-        <h2 style="margin-top: 10px; margin-bottom: 20px; text-align: center;">Достижения</h2>
+    <h2 style="margin-top: 10px; margin-bottom: 20px; text-align: center;">Достижения</h2>
+    <div class="awards_block container">
         {% for award in awards_list %}
-        <div class="award_card">
-            <h1>{{ award["title"] }}</h1>
-            <h4>{{ award["direction"] }}</h4>
-            <pre>{{ award["description"] }}</pre>
-            <h1>КАРТИНОК НЕ БУДЕТ ОНИ УМИРАЮТ</h1>
-            <img src="{{ award['image_filename'] | format_filepath}}" alt="">
+        <div class="award_card card card-normalized mb-3">
+
+            <h4>{{ award["title"] }}</h4>
+            <a class="card_link" href="/static/img/{{ award.image_filename }}" target="_blank">
+                <div class="card_bg" style="background-image: url('/static/img/{{ award.image_filename }}')">
+                    <div class="award_card_body">
+                        <h5>{{ award["direction"] }}</h5>
+                        <pre>{{ award["description"] }}</pre>
+                    </div>
+                </div>
+            </a>
+            <p class="card-text" style="margin: 1.5px 4px 1.5px 4px;"><small class="text-muted">{{
+                award.creation_date }}</small></p>
         </div>
         {% endfor %}
     </div>
