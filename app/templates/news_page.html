@@ -7,7 +7,7 @@
     <div class="newsblock">
         <h2 style="margin-top: 10px; margin-bottom: 20px; text-align: center;">Новости</h2>
         {% if current_user.is_authenticated %}
-            <center><a class="btn btn-submit" href="/news/add" style="width: 100%">Добавить</a></center>
+        <center><a class="btn btn-submit" href="/news/add" style="width: 100%">Добавить</a></center>
         {% endif %}
         {% for news in news_list %}
         <div class="news-card">
@@ -15,14 +15,16 @@
                 {{ news["title"] }}
                 {% if current_user.is_authenticated %}
                 <a style="text-decoration: none; color: blue;" href="/news/edit/{{ news.id }}">✎</a>
-                <a style="text-decoration: none; color: red;" onclick="return confirm('Вы уверены?')" href="/news/delete/{{ news.id }}">❌</a>
+                <a style="text-decoration: none; color: red;" onclick="return confirm('Вы уверены?')"
+                   href="/news/delete/{{ news.id }}">❌</a>
                 {% endif %}
             </h4>
             <h6 style="margin-top: -5px; font-size: 0.85em;">{{ news["creation_date"] }}</h6>
             <br>
             {% for img_name in news["paths_to_images"].split(';') %}
             {% if img_name %}
-            <img src="/static/img/{{img_name}}" alt="{{img_name}} картинка не найдена" style="margin-bottom: 10px; width: 100%;">
+            <img src="/static/img/{{img_name}}" alt="{{img_name}} картинка не найдена"
+                 style="margin-bottom: 10px; width: 100%;">
             {% endif %}
             {% endfor %}
             <div>

@@ -1,40 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form class="login_form" action="" method="post">
-        <h2>Вход для админов</h2>
-        <br>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.login.label }}<br>
-            {{ form.login(class="form-control") }}<br>
-            {% for error in form.login.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
+<form class="login_form" action="" method="post">
+    <h2>Вход для админов</h2>
+    <br>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.login.label }}<br>
+        {{ form.login(class="form-control") }}<br>
+        {% for error in form.login.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
 
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(class="form-control", type="password") }}<br>
-            {% for error in form.password.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password(class="form-control", type="password") }}<br>
+        {% for error in form.password.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
 
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
 
-        {% if message %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{ message }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-        {% endif %}
-    </form>
+    {% if message %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+</form>
 {% endblock %}

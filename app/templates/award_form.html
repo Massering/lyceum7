@@ -9,44 +9,44 @@
         {{ form.title.label }}<br>
         {{ form.title(class="form-control") }}<br>
         {% for error in form.title.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
     </p>
     <p>
         {{ form.description.label }}<br>
         {{ form.description(class="form-control", style="height: 300px") }}<br>
         {% for error in form.description.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
     </p>
     <p>
         {{ form.direction.label }}<br>
         {{ form.direction(class="form-control") }}<br>
         {% for error in form.direction.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
     </p>
     <p>
         {{ form.file_field.label }}<br>
         {{ form.file_field(class="form-control file-input") }}<br>
         {% for error in form.file_field.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
+    <p class="alert alert-danger" role="alert">
+        {{ error }}
+    </p>
+    {% endfor %}
     </p>
 
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {% if message %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ message }}
-        </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+    </div>
     {% endif %}
 </form>
 {% endblock %}

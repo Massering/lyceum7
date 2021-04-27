@@ -7,12 +7,12 @@
         {% for award in awards_list %}
         <div class="award_card card card-normalized mb-3">
 
-            <h4>{{ award["title"] }}</h4>
+            <h4>{{ award.title }}</h4>
             <a class="card_link" href="/static/img/{{ award.image_filename }}" target="_blank">
                 <div class="card_bg" style="background-image: url('/static/img/{{ award.image_filename }}')">
                     <div class="award_card_body">
-                        <h5>{{ award["direction"] }}</h5>
-                        <pre>{{ award["description"] }}</pre>
+                        <h5>{{ award.direction }}</h5>
+                        <pre>{{ award.description }}</pre>
                     </div>
                 </div>
             </a>

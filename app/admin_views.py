@@ -13,7 +13,6 @@ from werkzeug.datastructures import CombinedMultiDict, FileStorage
 from flask import render_template, redirect, abort, request, url_for
 from flask_login import login_required, login_user, logout_user, current_user
 
-
 USER_SITES = ['/awards', '/news']
 
 
@@ -139,6 +138,8 @@ def register_admin():
             redirect('/admin/login')
         return render_template('admin_register.html', title='Регистрация', form=form)
     abort(404)
+
+
 # endregion
 
 
@@ -234,7 +235,6 @@ def delete_news_route(news_id: int):
     # Удаление новости
     delete_news(news_id)
     return redirect('/admin')
-# endregion
 
 
 # Т.к. менять/удалять/добавлять награды может только админ,
