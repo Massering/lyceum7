@@ -1,2 +1,3 @@
-web: python3 run_server:app
-init: python3 app/__init__.py
+web: python run_server.py
+run: python run_server.py
+init: python app/__init__.py
