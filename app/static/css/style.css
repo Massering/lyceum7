@@ -1,7 +1,3 @@
-html {
-    #mix-blend-mode: exclusion;
-}
-
 body {
     background-color: #888888;
     font-family: "Segoe UI";
@@ -48,9 +44,9 @@ form {
 }
 
 .main {
-    margin-top: -30px;
+    margin-top: -50px;
     margin-bottom: 50px;
-    padding: 50px;
+    padding: 70px;
     max-width: 1200px;
 
     background-color: #ececec;
@@ -144,7 +140,7 @@ a {
 }
 
 .awards_block {
-    padding: 25px;
+    padding: 5px;
 
     align-items: left;
     display: flex;
@@ -181,6 +177,16 @@ a {
 
     background-size: cover;
     background-position: center;
+}
+
+.info_block {
+    line-height: 30px;
+    align-items: center;
+}
+
+.img_container {
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 p {
