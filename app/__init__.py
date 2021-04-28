@@ -1,4 +1,4 @@
-from data import db_session
+from app.data import db_session
 
 from flask import Flask
 from flask_login import LoginManager

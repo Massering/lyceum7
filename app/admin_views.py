@@ -2,12 +2,12 @@ import os
 from datetime import datetime
 
 from app import app, login_manager, db_session
-from data.__all_models import Admin
-from API.news import *
-from API.awards import *
-from forms.admin import AdminLoginForm, AdminRegisterForm
-from forms.news import NewsForm
-from forms.award import AwardForm
+from app.data.__all_models import Admin
+from app.API.news import *
+from app.API.awards import *
+from app.forms.admin import AdminLoginForm, AdminRegisterForm
+from app.forms.news import NewsForm
+from app.forms.award import AwardForm
 
 from werkzeug.datastructures import CombinedMultiDict, FileStorage
 from flask import render_template, redirect, abort, request, url_for

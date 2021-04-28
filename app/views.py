@@ -1,7 +1,7 @@
 from app import login_manager, app
-from data.__all_models import News, Award
-from API.news import get_news
-from API.awards import get_awards
+from app.data.__all_models import News, Award
+from app.API.news import get_news
+from app.API.awards import get_awards
 
 from flask import render_template, redirect, abort
 

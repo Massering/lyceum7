@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from data import db_session
-from data.__all_models import Award
+from app.data import db_session
+from app.data.__all_models import Award
 
 from sqlalchemy.exc import InvalidRequestError
 
