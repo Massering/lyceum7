@@ -14,7 +14,6 @@ def handle_404(error=""):
     return render_template("404.html")
 
 
-@login_manager.unauthorized_handler
 @app.errorhandler(413)
 def handle_413(error=""):
     return render_template("error.html", error='413',
@@ -74,3 +73,35 @@ def specialized_classes():
         "title": "Специализированные классы",
     }
     return render_template('specialized_classes.html', **params)
+
+
+@app.route('/school_feed')
+def school_feed():
+    params = {
+        "title": "Школьное питание",
+    }
+    return render_template('school_feed.html', **params)
+
+
+@app.route('/rosneft_class')
+def rosneft_class():
+    params = {
+        "title": "Роснефть-класс",
+    }
+    return render_template('rosneft_class.html', **params)
+
+
+@app.route('/FoRCaSE')
+def forcase():
+    params = {
+        "title": "ОРКСЭ",
+    }
+    return render_template('FoRCaSE.html', **params)
+
+
+@app.route('/standard_of_education_quality')
+def standard_of_education_quality():
+    params = {
+        "title": "Стандарт качества образования",
+    }
+    return render_template('standard_of_education_quality.html', **params)
