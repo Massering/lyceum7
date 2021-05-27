@@ -202,7 +202,7 @@ h2 {
 
 pre {
     font-family: 'Segoe UI';
-    white-space: inherit;
+    white-space: break-spaces;
 }
 
 .file-input {
